@@ -1,0 +1,40 @@
+{
+    "name": "General Dev Container",
+    "privileged": false,
+    "remoteUser": "${localEnv:USER}",
+    "build": {
+        "dockerfile": "../Dockerfile",
+        "args": {
+            "USERNAME": "${localEnv:USER}",
+            "USER_UID": "1000",  // Replace with your UID
+            "USER_GID": "1000"   // Replace with your GID
+        }
+    },
+    "workspaceFolder": "/home/${localEnv:USER}/workspace",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/zsh"
+            },
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "mhutchie.git-graph",
+                "ms-python.python",
+                "ms-vscode-remote.remote-containers"
+            ]
+        }
+    },
+    "runArgs": [
+        "-e",
+        "DISPLAY=${localEnv:DISPLAY}",
+        "-v",
+        "/tmp/.X11-unix:/tmp/.X11-unix"
+    ],
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/home/${localEnv:USER}/workspace,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.devcontainer/zsh_history,target=/home/${localEnv:USER}/.zsh_history,type=bind",
+        "source=${localEnv:HOME}/.devcontainer/bash_history,target=/home/${localEnv:USER}/.bash_history,type=bind"
+    ],
+    "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+    "initializeCommand": "./.devcontainer/initializeCommand.sh"
+}
